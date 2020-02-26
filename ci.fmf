@@ -4,7 +4,7 @@
         For execution it uses conatainer built for execution of the test.
     provision:
         how: container
-        image: quay.io/testing-farm/test-rpmdeplint:d853876
+        image: quay.io/testing-farm/test-rpmdeplint:fhdsjk
     execute:
         how: shell
         # Note: script MUST be passed to 'tmt run' on command line
