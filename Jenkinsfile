@@ -1,46 +1,68 @@
-#!/usr/bin/env groovy
+#!groovy
 
+@Library('fedora-pipeline-library@prototype') _
 
-def props = [
-    parameters([string(description: 'CI message', defaultValue: '{}', name: 'CI_MESSAGE')])
+def pipelineMetadata = [
+    pipelineName: 'rpmdeplint',
+    pipelineDescription: 'TODO',
+    testCategory: 'integration',
+    testType: 'tier1',
+    maintainer: 'Fedora CI',
+    docs: 'https://somewhere.com/user-documentation',
+    contact: [
+        irc: '#fedora-ci',
+        email: 'fedora-ci@fedoraproject.org'
+    ],
 ]
+def artifactId
+def dryRun = isPullRequest() ? true : false
 
-if (env.BRANCH_NAME == 'master') {
-    props.add(properties(
-        [pipelineTriggers([[$class: 'CIBuildTrigger', noSquash: true, providerData: [$class: 'FedMsgSubscriberProviderData',name: 'fedora-fedmsg',
-         overrides: [topic: 'org.fedoraproject.prod.bodhi.update.status.testing.koji-build-group.build.complete']
-        ]]])]
-    ))
-}
+pipeline {
 
-properties(props)
+    agent {
+        label 'fedora-ci-agent'
+    }
 
-node('master') {
+    parameters {
+        string(name: 'ARTIFACT_ID', defaultValue: '', description: '"koji-build:<taskId>" for Koji builds; Example: koji-build:42376994')
+    }
 
-    stage('Init') {
-        // checkout scm
+    stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    artifactId = params.ARTIFACT_ID
+                }
+                sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
+            }
+        }
 
-        if (env.BRANCH_NAME != 'master') {
-            // load test CI message from a file
+        stage('Test') {
+            steps {
+                script {
+                    echo 'Call Testing Farm here and wait for results...'
+                }
+            }
+        }
+
+        stage('Archive Results') {
+            steps {
+                script {
+                    echo 'Fetch results from Testing Farm and archive them (if needed).'
+                }
+            }
         }
     }
 
-    stage('Test') {
-        // call testing farm and wait
-    }
-
-    stage('Archive Results') {
-        // call testing farm and wait;
-        // wait on master, not on a node :)
-    }
-
-    if (env.BRANCH_NAME == 'master') {
-        stage('Report on UMB') {
-            // ...
+    post { 
+        success { 
+            echo 'Publish results and send email(s).'
         }
-    } else {
-        stage('Comment on Pull-Request') {
-            // ...
+        failure { 
+            echo 'Publish results and send email(s).'
+        }
+        unstable { 
+            echo 'Publish results and send email(s).'
         }
     }
 }

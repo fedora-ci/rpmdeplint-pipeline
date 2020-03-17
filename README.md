@@ -1,2 +1,1 @@
-# rawhide-rpmdeplint-koji-build-pipeline
-
+# rawhide-rpmdeplint-pipeline
