@@ -11,11 +11,11 @@ def pipelineMetadata = [
     docs: 'https://somewhere.com/user-documentation',
     contact: [
         irc: '#fedora-ci',
-        email: 'fedora-ci@fedoraproject.org'
+        email: 'ci@lists.fedoraproject.org'
     ],
 ]
 def artifactId
-def dryRun = isPullRequest() ? true : false
+def dryRun
 
 pipeline {
 
