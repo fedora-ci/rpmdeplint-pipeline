@@ -32,13 +32,15 @@ pipeline {
             steps {
                 script {
                     artifactId = params.ARTIFACT_ID
+                    dryRun = isPullRequest() ? true : false
                 }
-                sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
+                sendMessage(type: 'queued', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
             }
         }
 
         stage('Test') {
             steps {
+                sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
                 script {
                     echo 'Call Testing Farm here and wait for results...'
                 }
@@ -54,15 +56,21 @@ pipeline {
         }
     }
 
-    post { 
-        success { 
-            echo 'Publish results and send email(s).'
+    post {
+        always {
+            echo 'Archive results. This includes fetching artifacts from Testing Farm (if needed).'
         }
-        failure { 
+        success {
             echo 'Publish results and send email(s).'
+            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
         }
-        unstable { 
+        failure {
             echo 'Publish results and send email(s).'
+            sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
+        }
+        unstable {
+            echo 'Publish results and send email(s).'
+            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
         }
     }
 }
