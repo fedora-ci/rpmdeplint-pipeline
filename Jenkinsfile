@@ -46,14 +46,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Archive Results') {
-            steps {
-                script {
-                    echo 'Fetch results from Testing Farm and archive them (if needed).'
-                }
-            }
-        }
     }
 
     post {
