@@ -20,6 +20,10 @@ def dryRun
 
 pipeline {
 
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '180', artifactNumToKeepStr: '200'))
+    }
+
     agent {
         label 'fedora-ci-agent'
     }
