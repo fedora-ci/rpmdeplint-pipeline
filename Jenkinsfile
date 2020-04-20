@@ -17,6 +17,7 @@ def pipelineMetadata = [
 def artifactId
 def dryRun
 
+
 pipeline {
 
     agent {
@@ -24,7 +25,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'ARTIFACT_ID', defaultValue: '', description: '"koji-build:<taskId>" for Koji builds; Example: koji-build:42376994')
+        string(name: 'ARTIFACT_ID', defaultValue: null, description: '"koji-build:<taskId>" for Koji builds; Example: koji-build:42376994')
     }
 
     stages {
@@ -32,7 +33,11 @@ pipeline {
             steps {
                 script {
                     artifactId = params.ARTIFACT_ID
-                    dryRun = isPullRequest() ? true : false
+                    dryRun = isPullRequest()
+                }
+
+                if (!artifactId) {
+                    abort('ARTIFACT_ID is missing')
                 }
                 sendMessage(type: 'queued', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
             }
