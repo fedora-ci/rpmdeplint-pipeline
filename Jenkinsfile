@@ -38,10 +38,10 @@ pipeline {
                 script {
                     artifactId = params.ARTIFACT_ID
                     dryRun = isPullRequest()
-                }
 
-                if (!artifactId) {
-                    abort('ARTIFACT_ID is missing')
+                    if (!artifactId) {
+                        abort('ARTIFACT_ID is missing')
+                    }
                 }
                 sendMessage(type: 'queued', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
             }
