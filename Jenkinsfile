@@ -36,7 +36,7 @@ pipeline {
         stage('Prepare') {
             steps {
                 script {
-                    artifactId = params.ARTIFACT_ID
+                    artifactId = params.ARTIFACT_ID?.trim()
                     dryRun = isPullRequest()
 
                     if (!artifactId) {
