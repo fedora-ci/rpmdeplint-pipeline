@@ -21,7 +21,7 @@ def dryRun
 pipeline {
 
     options {
-        buildDiscarder(logRotator(daysToKeepStr: '180', artifactNumToKeepStr: '200'))
+        buildDiscarder(logRotator(numToKeepStr: '200'))
     }
 
     agent {
