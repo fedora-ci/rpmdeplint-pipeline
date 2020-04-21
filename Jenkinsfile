@@ -43,6 +43,7 @@ pipeline {
                         abort('ARTIFACT_ID is missing')
                     }
                 }
+                setBuildNameFromArtifactId(artifactId)
                 sendMessage(type: 'queued', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
             }
         }
