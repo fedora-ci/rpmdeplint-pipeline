@@ -29,14 +29,14 @@ pipeline {
     }
 
     parameters {
-        string(name: 'ARTIFACT_ID', defaultValue: null, description: '"koji-build:<taskId>" for Koji builds; Example: koji-build:42376994')
+        string(name: 'ARTIFACT_ID', defaultValue: null, trim: true, description: '"koji-build:<taskId>" for Koji builds; Example: koji-build:42376994')
     }
 
     stages {
         stage('Prepare') {
             steps {
                 script {
-                    artifactId = params.ARTIFACT_ID?.trim()
+                    artifactId = params.ARTIFACT_ID
                     dryRun = isPullRequest()
 
                     if (!artifactId) {
