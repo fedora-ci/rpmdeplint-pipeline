@@ -15,7 +15,6 @@ def pipelineMetadata = [
     ],
 ]
 def artifactId
-def dryRun
 
 
 pipeline {
@@ -37,20 +36,19 @@ pipeline {
             steps {
                 script {
                     artifactId = params.ARTIFACT_ID
-                    dryRun = isPullRequest()
 
                     if (!artifactId) {
                         abort('ARTIFACT_ID is missing')
                     }
                 }
                 setBuildNameFromArtifactId(artifactId: artifactId)
-                sendMessage(type: 'queued', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
+                sendMessage(type: 'queued', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
             }
         }
 
         stage('Test') {
             steps {
-                sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
+                sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
                 script {
                     echo 'Call Testing Farm here and wait for results...'
                 }
@@ -64,15 +62,15 @@ pipeline {
         }
         success {
             echo 'Publish results and send email(s).'
-            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
+            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
         }
         failure {
             echo 'Publish results and send email(s).'
-            sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
+            sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
         }
         unstable {
             echo 'Publish results and send email(s).'
-            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: dryRun)
+            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
         }
     }
 }
