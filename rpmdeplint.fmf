@@ -1,8 +1,9 @@
 /rpmdeplint:
     summary:
-        Runs rpmdeplint test from Fedora CI - https://github.com/fedora-ci/rawhide-rpmdeplint-pipeline.
+        Runs rpmdeplint test from Fedora CI - https://github.com/fedora-ci/rpmdeplint-pipeline.
     provision:
         how: container
+        # the image comes from https://github.com/fedora-ci/rpmdeplint-image
         image: quay.io/msrb/rpmdeplint:6e52c4a
     execute:
         how: shell
