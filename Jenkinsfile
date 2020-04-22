@@ -4,11 +4,11 @@
 
 def pipelineMetadata = [
     pipelineName: 'rpmdeplint',
-    pipelineDescription: 'TODO',
+    pipelineDescription: 'Finding errors in RPM packages in the context of their dependency graph',
     testCategory: 'integration',
     testType: 'tier1',
     maintainer: 'Fedora CI',
-    docs: 'https://somewhere.com/user-documentation',
+    docs: 'https://github.com/fedora-ci/rpmdeplint-rawhide',
     contact: [
         irc: '#fedora-ci',
         email: 'ci@lists.fedoraproject.org'
@@ -50,7 +50,9 @@ pipeline {
             steps {
                 sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
                 script {
-                    echo 'Call Testing Farm here and wait for results...'
+                    def releaseId = getReleaseIdFromBranch()
+                    echo "Call Testing Farm here and wait for results..."
+                    echo "script: /rpmdeplint/run_rpmdeplint.py -r ${releaseId} -t ${artifactId.split(':')[1]}"
                 }
             }
         }
