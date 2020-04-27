@@ -1,6 +1,6 @@
 #!groovy
 
-@Library('fedora-pipeline-library') _
+@Library('fedora-pipeline-library@prototype') _
 
 def pipelineMetadata = [
     pipelineName: 'rpmdeplint',
