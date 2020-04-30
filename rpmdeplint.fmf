@@ -1,10 +1,25 @@
-/rpmdeplint:
-    summary:
-        Runs rpmdeplint test from Fedora CI - https://github.com/fedora-ci/rpmdeplint-pipeline.
-    provision:
-        how: container
-        # the image comes from https://github.com/fedora-ci/rpmdeplint-image
-        image: quay.io/msrb/rpmdeplint:6e52c4a
-    execute:
-        how: shell
-        # tmt run -a execute --script "/rpmdeplint/run_rpmdeplint.py -r f32 -t 41354594"
+summary: TMT/FMF plan for running rpmdeplint.
+
+description: |
+    Runs rpmdeplint test from Fedora CI - https://github.com/fedora-ci/rpmdeplint-pipeline.
+
+provision:
+    how: container
+    # the image comes from https://github.com/fedora-ci/rpmdeplint-image
+    image: quay.io/msrb/rpmdeplint:6e52c4a
+
+prepare:
+    how: shell
+    script: |
+        if [ -z "$RELEASE_ID" ]; then
+            echo "RELEASE_ID not specified"
+            exit 1
+        fi
+        if [ -z "$TASK_ID" ]; then
+            echo "TASK_ID not specified"
+            exit 1
+        fi
+
+execute:
+    how: shell
+    script: /rpmdeplint/run_rpmdeplint.py --release $RELEASE_ID --task-id $TASK_ID
