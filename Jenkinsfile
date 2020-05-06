@@ -8,7 +8,7 @@ def pipelineMetadata = [
     testCategory: 'integration',
     testType: 'tier1',
     maintainer: 'Fedora CI',
-    docs: 'https://github.com/fedora-ci/rpmdeplint-rawhide',
+    docs: 'https://github.com/fedora-ci/rpmdeplint-pipeline',
     contact: [
         irc: '#fedora-ci',
         email: 'ci@lists.fedoraproject.org'
