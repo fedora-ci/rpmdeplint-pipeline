@@ -15,6 +15,7 @@ def pipelineMetadata = [
     ],
 ]
 def artifactId
+def testingFarmResult
 
 
 pipeline {
@@ -49,10 +50,29 @@ pipeline {
         stage('Test') {
             steps {
                 sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+
                 script {
-                    def releaseId = getReleaseIdFromBranch()
-                    echo "Call Testing Farm here and wait for results..."
-                    echo "script: /rpmdeplint/run_rpmdeplint.py -r ${releaseId} -t ${artifactId.split(':')[1]}"
+                    def requestPayload = """
+                        {
+                            "api_key": "xxx",
+                            "test": {
+                                "fmf": {
+                                    "url": "${getGitUrl()}",
+                                    "ref": "${getGitRef()}",
+                                }
+                            }
+                            "environments": {
+                                "variables": {
+                                    "RELEASE_ID": "${getReleaseIdFromBranch()}",
+                                    "TASK_ID": "${artifactId.split(':')[1]}"
+                                }
+                            }
+                        }
+                    """
+                    def response = submitTestingFarmRequest(payload: requestPayload)
+                    testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 30)
+
+                    evaluateTestingFarmResults(testingFarmResult)
                 }
             }
         }
