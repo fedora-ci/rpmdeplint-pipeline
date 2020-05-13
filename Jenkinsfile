@@ -87,7 +87,11 @@ pipeline {
         }
         failure {
             sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
-            echo 'Testing Farm is not up and running yet so this test will always fail now. You can safely ignore it now.'
+            echo """
+*******************************************************************************************************
+Testing Farm is not up and running yet so this test will always fail now. You can safely ignore it now.
+*******************************************************************************************************
+            """
         }
         unstable {
             sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
