@@ -89,9 +89,9 @@ pipeline {
         failure {
             sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
             echo """
-*******************************************************************************************************
+*******************************************************************************************************************
 Testing Farm is not up and running yet so this test will always fail. You can safely ignore it now. But stay tuned!
-*******************************************************************************************************
+*******************************************************************************************************************
             """
         }
         unstable {
