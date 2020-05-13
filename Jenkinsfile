@@ -5,8 +5,8 @@
 def pipelineMetadata = [
     pipelineName: 'rpmdeplint',
     pipelineDescription: 'Finding errors in RPM packages in the context of their dependency graph',
-    testCategory: 'integration',
-    testType: 'tier1',
+    testCategory: 'functional',
+    testType: 'rpmdeplint',
     maintainer: 'Fedora CI',
     docs: 'https://github.com/fedora-ci/rpmdeplint-pipeline',
     contact: [
