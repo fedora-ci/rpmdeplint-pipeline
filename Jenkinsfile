@@ -30,6 +30,7 @@ pipeline {
 
     parameters {
         string(name: 'ARTIFACT_ID', defaultValue: null, trim: true, description: '"koji-build:<taskId>" for Koji builds; Example: koji-build:42376994')
+        string(name: 'ADDITIONAL_ARTIFACT_IDS', defaultValue: null, trim: true, description: 'A comma-separated list of additional ARTIFACT_IDs')
     }
 
     stages {
