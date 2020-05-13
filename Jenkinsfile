@@ -80,18 +80,16 @@ pipeline {
 
     post {
         always {
-            echo 'Archive results. This includes fetching artifacts from Testing Farm (if needed).'
+            echo 'No Testing Farm, nothing to archive.'
         }
         success {
-            echo 'Publish results and send email(s).'
             sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
         }
         failure {
-            echo 'Publish results and send email(s).'
             sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+            echo 'Testing Farm is not up and running yet so this test will always fail now. You can safely ignore it now.'
         }
         unstable {
-            echo 'Publish results and send email(s).'
             sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
         }
     }
