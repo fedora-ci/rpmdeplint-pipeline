@@ -21,7 +21,7 @@ def testingFarmResult
 pipeline {
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '200'))
+        buildDiscarder(logRotator(daysToKeepStr: '180', artifactNumToKeepStr: '100'))
     }
 
     agent {
