@@ -1,5 +1,12 @@
 summary: TMT/FMF plan for running rpmdeplint.
 
+discover:
+    how: shell
+    tests:
+    - name: /rpmdeplint
+      test: /rpmdeplint/run_rpmdeplint.py --release $RELEASE_ID --task-id $TASK_ID
+      duration: 60m
+
 description: |
     Runs rpmdeplint test from Fedora CI - https://github.com/fedora-ci/rpmdeplint-pipeline.
 
@@ -22,4 +29,3 @@ prepare:
 
 execute:
     how: shell
-    script: /rpmdeplint/run_rpmdeplint.py --release $RELEASE_ID --task-id $TASK_ID

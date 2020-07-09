@@ -33,6 +33,10 @@ pipeline {
         string(name: 'ADDITIONAL_ARTIFACT_IDS', defaultValue: null, trim: true, description: 'A comma-separated list of additional ARTIFACT_IDs')
     }
 
+    environment {
+        TESTING_FARM_API_KEY = credentials('testing-farm-api-key')
+    }
+
     stages {
         stage('Prepare') {
             steps {
@@ -55,25 +59,27 @@ pipeline {
                 script {
                     def requestPayload = """
                         {
-                            "api_key": "xxx",
+                            "api_key": "${env.TESTING_FARM_API_KEY}",
                             "test": {
                                 "fmf": {
                                     "url": "${getGitUrl()}",
-                                    "ref": "${getGitRef()}",
+                                    "ref": "${getGitRef()}"
                                 }
-                            }
-                            "environments": {
-                                "variables": {
-                                    "RELEASE_ID": "${getReleaseIdFromBranch()}",
-                                    "TASK_ID": "${artifactId.split(':')[1]}"
+                            },
+                            "environments": [
+                                {
+                                    "arch": "x86_64",
+                                    "variables": {
+                                        "RELEASE_ID": "${getReleaseIdFromBranch()}",
+                                        "TASK_ID": "${artifactId.split(':')[1]}"
+                                    }
                                 }
-                            }
+                            ]
                         }
                     """
-                    // def response = submitTestingFarmRequest(payload: requestPayload)
-                    // testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 30)
-
-                    // evaluateTestingFarmResults(testingFarmResult)
+                    def response = submitTestingFarmRequest(payload: requestPayload)
+                    testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 30)
+                    evaluateTestingFarmResults(testingFarmResult)
                 }
             }
         }
@@ -88,11 +94,6 @@ pipeline {
         }
         failure {
             sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
-            echo """
-*******************************************************************************************************************
-Testing Farm is not up and running yet so this test will always fail. You can safely ignore it now. But stay tuned!
-*******************************************************************************************************************
-            """
         }
         unstable {
             sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
