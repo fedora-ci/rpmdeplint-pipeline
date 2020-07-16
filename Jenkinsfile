@@ -78,7 +78,7 @@ pipeline {
                         }
                     """
                     // def response = submitTestingFarmRequest(payload: requestPayload)
-                    // testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 30)
+                    // testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 60)
                     // evaluateTestingFarmResults(testingFarmResult)
                 }
             }
