@@ -5,7 +5,7 @@ discover:
     tests:
     - name: /rpmdeplint
       test: /rpmdeplint/run_rpmdeplint.py --release $RELEASE_ID --task-id $TASK_ID
-      duration: 60m
+      duration: 240m
 
 description: |
     Runs rpmdeplint test from Fedora CI - https://github.com/fedora-ci/rpmdeplint-pipeline.
