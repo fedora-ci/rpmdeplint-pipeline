@@ -23,6 +23,7 @@ pipeline {
     options {
         buildDiscarder(logRotator(daysToKeepStr: '180', artifactNumToKeepStr: '100'))
         throttle(['max-10'])
+        timeout(time: 4, unit: 'HOURS')
     }
 
     agent {
