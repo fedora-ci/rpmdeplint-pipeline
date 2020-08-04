@@ -27,7 +27,7 @@ pipeline {
     }
 
     agent {
-        label 'fedora-ci-agent'
+        label 'master'
     }
 
     parameters {
