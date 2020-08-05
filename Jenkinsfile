@@ -22,7 +22,6 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(daysToKeepStr: '180', artifactNumToKeepStr: '100'))
-        throttle(['max-10'])
         timeout(time: 4, unit: 'HOURS')
     }
 
@@ -56,7 +55,6 @@ pipeline {
 
         stage('Test') {
             steps {
-                sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
 
                 script {
                     def requestPayload = """
@@ -79,7 +77,11 @@ pipeline {
                             ]
                         }
                     """
-                    def response = submitTestingFarmRequest(payload: requestPayload)
+
+                    throttle(['max-10']) {
+                        def response = submitTestingFarmRequest(payload: requestPayload)
+                    }
+                    sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
                     testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 60)
                     evaluateTestingFarmResults(testingFarmResult)
                 }
