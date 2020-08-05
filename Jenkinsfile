@@ -22,7 +22,7 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(daysToKeepStr: '180', artifactNumToKeepStr: '100'))
-        throttle(['max-10'])
+        throttleJobProperty maxConcurrentTotal: 1, throttleEnabled: true, throttleOption: 'project'
         timeout(time: 4, unit: 'HOURS')
     }
 
