@@ -1,6 +1,6 @@
 #!groovy
 
-@Library('fedora-pipeline-library@prototype') _
+@Library('fedora-pipeline-library@distgit') _
 
 def pipelineMetadata = [
     pipelineName: 'rpmdeplint',
@@ -48,6 +48,14 @@ pipeline {
                     if (!artifactId) {
                         abort('ARTIFACT_ID is missing')
                     }
+
+                    def url = getRepoUrlFromTaskId("${artifactId.split(':')[1]}")
+                    echo "${url}"
+                    def hasTests = repoHasStiTests(repoUrl: url, branch: 'master')
+                    echo "${hasTests}"
+                    hasTests = repoHasStiTests(repoUrl: url, branch: 'nope')
+                    echo "${hasTests}"
+
                 }
                 setBuildNameFromArtifactId(artifactId: artifactId)
                 sendMessage(type: 'queued', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
@@ -79,9 +87,9 @@ pipeline {
                             ]
                         }
                     """
-                    def response = submitTestingFarmRequest(payload: requestPayload)
-                    testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 60)
-                    evaluateTestingFarmResults(testingFarmResult)
+                    // def response = submitTestingFarmRequest(payload: requestPayload)
+                    // testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 60)
+                    // evaluateTestingFarmResults(testingFarmResult)
                 }
             }
         }
