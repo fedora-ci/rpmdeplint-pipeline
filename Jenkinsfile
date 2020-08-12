@@ -89,15 +89,6 @@ pipeline {
     }
 
     post {
-        always {
-            script {
-                // Show XUnit results in Jenkins, if possible
-                // if (testingFarmResult) {
-                //     def xunit = testingFarmResult.get('result', [:]).get('xunit', '')
-                //     writeFile file: 'xunit.xml', text: "${xunit}"
-                // }
-            }
-        }
         success {
             sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, testingFarmResult: testingFarmResult, dryRun: isPullRequest())
             xunit(
