@@ -90,17 +90,10 @@ pipeline {
 
     post {
         success {
-            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, testingFarmResult: testingFarmResult, dryRun: isPullRequest())
             xunit(
                 thresholds: [skipped(failureThreshold: '0'), failed(failureThreshold: '0')],
                 tools: [JUnit(pattern: 'xunit.xml')]
             )
-        }
-        failure {
-            sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
-        }
-        unstable {
-            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, testingFarmResult: testingFarmResult, dryRun: isPullRequest())
         }
     }
 }
