@@ -1,4 +1,5 @@
-<testsuite tests="3">
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="rpmdeplint" tests="3" failures="1" errors="0">
   <testcase classname="foo1" name="ASuccessfulTest"/>
   <testcase classname="foo2" name="AnotherSuccessfulTest"/>
   <testcase classname="foo3" name="AFailingTest">
