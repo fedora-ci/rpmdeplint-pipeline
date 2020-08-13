@@ -3,17 +3,33 @@ summary: TMT/FMF plan for running rpmdeplint.
 discover:
     how: shell
     tests:
-    - name: /rpmdeplint
-      test: /rpmdeplint/run_rpmdeplint.py --release $RELEASE_ID --task-id $TASK_ID
-      duration: 240m
+    - name: check-sat-x86_64
+      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
+      duration: 20m
+    - name: check-repoclosure-x86_64
+      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
+      duration: 20m
+    - name: check-upgrade-x86_64
+      test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
+      duration: 20m
+
+    - name: check-sat-aarch64
+      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
+      duration: 20m
+    - name: check-repoclosure-aarch64
+      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
+      duration: 20m
+    - name: check-upgrade-aarch64
+      test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
+      duration: 20m
 
 description: |
-    Runs rpmdeplint test from Fedora CI - https://github.com/fedora-ci/rpmdeplint-pipeline.
+    Runs rpmdeplint tests from Fedora CI - https://github.com/fedora-ci/rpmdeplint-pipeline.
 
 provision:
     how: container
     # the image comes from https://github.com/fedora-ci/rpmdeplint-image
-    image: quay.io/msrb/rpmdeplint:6279b9d
+    image: quay.io/msrb/rpmdeplint:5b54f15
 
 prepare:
     how: shell
@@ -26,6 +42,7 @@ prepare:
             echo "TASK_ID not specified"
             exit 1
         fi
+        /rpmdeplint_runner/run.py prepare --task-id $TASK_ID --release $RELEASE_ID --arch x86_64,aarch64 --workdir /workdir
 
 execute:
     how: shell
