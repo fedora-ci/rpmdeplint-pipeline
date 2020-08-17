@@ -90,10 +90,7 @@ pipeline {
 
     post {
         success {
-            xunit(
-                thresholds: [skipped(failureThreshold: '0'), failed(failureThreshold: '0')],
-                tools: [JUnit(pattern: 'xunit.xml')]
-            )
+            junit allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml'
         }
     }
 }
