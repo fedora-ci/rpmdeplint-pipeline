@@ -90,7 +90,8 @@ pipeline {
 
     post {
         success {
-            junit allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml'
+            touch(file: 'xunit.xml')
+            junit(allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml')
         }
     }
 }
