@@ -20,13 +20,11 @@ def testingFarmResult
 
 pipeline {
 
+    agent { label 'master' }
+
     options {
         buildDiscarder(logRotator(daysToKeepStr: '180', artifactNumToKeepStr: '100'))
         timeout(time: 4, unit: 'HOURS')
-    }
-
-    agent {
-        label 'fedora-ci-agent'
     }
 
     parameters {
@@ -91,10 +89,12 @@ pipeline {
             // Show XUnit results in Jenkins, if possible
             script {
                 if (testingFarmResult) {
-                    def xunit = testingFarmResult.get('result', [:]).get('xunit', '')
-                    writeFile file: 'tfxunit.xml', text: "${xunit}"
-                    sh script: "tfxunit2junit ${env.WORKSPACE}/tfxunit.xml > ${env.WORKSPACE}/xunit.xml"
-                    junit(allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml')
+                    node('fedora-ci-agent') {
+                        def xunit = testingFarmResult.get('result', [:]).get('xunit', '')
+                        writeFile file: 'tfxunit.xml', text: "${xunit}"
+                        sh script: "tfxunit2junit ${env.WORKSPACE}/tfxunit.xml > ${env.WORKSPACE}/xunit.xml"
+                        junit(allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml')
+                    }
                 }
             }
         }
