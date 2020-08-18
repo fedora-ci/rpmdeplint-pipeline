@@ -26,7 +26,7 @@ pipeline {
     }
 
     agent {
-        label 'master'
+        label 'fedora-ci-agent'
     }
 
     parameters {
@@ -88,7 +88,15 @@ pipeline {
 
     post {
         always {
-            echo 'No Testing Farm, nothing to archive.'
+            // Show XUnit results in Jenkins, if possible
+            script {
+                if (testingFarmResult) {
+                    def xunit = testingFarmResult.get('result', [:]).get('xunit', '')
+                    writeFile file: 'tfxunit.xml', text: "${xunit}"
+                }
+                sh script: "tfxunit2junit ${env.WORKSPACE}/tfxunit.xml > ${env.WORKSPACE}/xunit.xml"
+                junit(allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml')
+            }
         }
         success {
             sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, testingFarmResult: testingFarmResult, dryRun: isPullRequest())
