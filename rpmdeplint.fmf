@@ -23,14 +23,14 @@ discover:
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
       duration: 20m
 
-    - name: check-sat-armhfp
-      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch armhfp --os fedora --workdir /workdir
+    - name: check-sat-armv7hl
+      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch armv7hl --os fedora --workdir /workdir
       duration: 20m
-    - name: check-repoclosure-armhfp
-      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch armhfp --os fedora --workdir /workdir
+    - name: check-repoclosure-armv7hl
+      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch armv7hl --os fedora --workdir /workdir
       duration: 20m
-    - name: check-upgrade-armhfp
-      test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch armhfp --os fedora --workdir /workdir
+    - name: check-upgrade-armv7hl
+      test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch armv7hl --os fedora --workdir /workdir
       duration: 20m
 
 description: |
@@ -52,7 +52,7 @@ prepare:
             echo "TASK_ID not specified"
             exit 1
         fi
-        /rpmdeplint_runner/run.py prepare --task-id $TASK_ID --release $RELEASE_ID --arch x86_64,aarch64,armhfp --workdir /workdir
+        /rpmdeplint_runner/run.py prepare --task-id $TASK_ID --release $RELEASE_ID --arch x86_64,aarch64,armv7hl --workdir /workdir
 
 execute:
     how: shell
