@@ -42,7 +42,7 @@ description: |
 provision:
     how: container
     # the image comes from https://github.com/fedora-ci/rpmdeplint-image
-    image: quay.io/msrb/rpmdeplint:a06e84a
+    image: quay.io/fedoraci/rpmdeplint:76b260e
 
 prepare:
     how: shell
