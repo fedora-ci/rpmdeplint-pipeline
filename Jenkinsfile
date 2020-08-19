@@ -92,7 +92,7 @@ pipeline {
                     node('fedora-ci-agent') {
                         def xunit = testingFarmResult.get('result', [:]).get('xunit', '')
                         writeFile file: 'tfxunit.xml', text: "${xunit}"
-                        sh script: "tfxunit2junit ${env.WORKSPACE}/tfxunit.xml > ${env.WORKSPACE}/xunit.xml"
+                        sh script: "tfxunit2junit tfxunit.xml > xunit.xml"
                         junit(allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml')
                     }
                 }
