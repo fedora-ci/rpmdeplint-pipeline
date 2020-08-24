@@ -16,6 +16,7 @@ def pipelineMetadata = [
 ]
 def artifactId
 def testingFarmResult
+def xunit
 
 
 pipeline {
@@ -78,6 +79,7 @@ pipeline {
                     """
                     def response = submitTestingFarmRequest(payload: requestPayload)
                     testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 60)
+                    xunit = testingFarmResult.get('result', [:]).get('xunit', '')
                     evaluateTestingFarmResults(testingFarmResult)
                 }
             }
@@ -90,7 +92,6 @@ pipeline {
             script {
                 if (testingFarmResult) {
                     node('fedora-ci-agent') {
-                        def xunit = testingFarmResult.get('result', [:]).get('xunit', '')
                         writeFile file: 'tfxunit.xml', text: "${xunit}"
                         sh script: "tfxunit2junit tfxunit.xml > xunit.xml"
                         junit(allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml')
@@ -99,13 +100,13 @@ pipeline {
             }
         }
         success {
-            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, testingFarmResult: testingFarmResult, dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
         }
         failure {
             sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
         }
         unstable {
-            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, testingFarmResult: testingFarmResult, dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
         }
     }
 }
