@@ -41,12 +41,12 @@ pipeline {
             steps {
                 script {
                     artifactId = params.ARTIFACT_ID
+                    setBuildNameFromArtifactId(artifactId: artifactId)
 
                     if (!artifactId) {
                         abort('ARTIFACT_ID is missing')
                     }
                 }
-                setBuildNameFromArtifactId(artifactId: artifactId)
                 sendMessage(type: 'queued', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
             }
         }
