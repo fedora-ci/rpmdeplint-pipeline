@@ -15,6 +15,7 @@ def pipelineMetadata = [
     ],
 ]
 def artifactId
+def additionalArtifactIds
 def testingFarmResult
 def xunit
 
@@ -42,6 +43,7 @@ pipeline {
             steps {
                 script {
                     artifactId = params.ARTIFACT_ID
+                    additionalArtifactIds = params.ADDITIONAL_ARTIFACT_IDS
                     setBuildNameFromArtifactId(artifactId: artifactId)
 
                     if (!artifactId) {
@@ -71,7 +73,7 @@ pipeline {
                                     "arch": "x86_64",
                                     "variables": {
                                         "RELEASE_ID": "${getReleaseIdFromBranch()}",
-                                        "TASK_ID": "${artifactId.split(':')[1]}"
+                                        "TASK_ID": "${getIdFromArtifactId(artifactId: artifactId, additionalArtifactIds: additionalArtifactIds)}"
                                     }
                                 }
                             ]
