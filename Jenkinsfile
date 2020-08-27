@@ -16,6 +16,7 @@ def pipelineMetadata = [
 ]
 def artifactId
 def additionalArtifactIds
+def testingFarmRequestId
 def testingFarmResult
 def xunit
 
@@ -54,10 +55,8 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Schedule Test') {
             steps {
-                sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
-
                 script {
                     def requestPayload = """
                         {
@@ -80,7 +79,16 @@ pipeline {
                         }
                     """
                     def response = submitTestingFarmRequest(payload: requestPayload)
-                    testingFarmResult = waitForTestingFarmResults(requestId: response['id'], timeout: 60)
+                    testingFarmRequestId = response['id']
+                }
+                sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+            }
+        }
+
+        stage('Wait for Test Results') {
+            steps {
+                script {
+                    testingFarmResult = waitForTestingFarmResults(requestId: testingFarmRequestId, timeout: 60)
                     xunit = testingFarmResult.get('result', [:]).get('xunit', '')
                     evaluateTestingFarmResults(testingFarmResult)
                 }
