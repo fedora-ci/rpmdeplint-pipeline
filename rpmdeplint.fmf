@@ -1,4 +1,6 @@
-summary: TMT/FMF plan for running rpmdeplint.
+summary: TMT/FMF plan for running the rpmdeplint tests.
+description: |
+    Runs rpmdeplint tests in Fedora CI — https://github.com/fedora-ci/rpmdeplint-pipeline.
 
 discover:
     how: shell
@@ -44,9 +46,6 @@ discover:
     - name: check-conflicts-armv7hl
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch armv7hl --os fedora --workdir /workdir
       duration: 20m
-
-description: |
-    Runs rpmdeplint tests from Fedora CI - https://github.com/fedora-ci/rpmdeplint-pipeline.
 
 provision:
     how: container
