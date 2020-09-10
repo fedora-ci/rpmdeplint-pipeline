@@ -89,7 +89,7 @@ pipeline {
             steps {
                 script {
                     testingFarmResult = waitForTestingFarmResults(requestId: testingFarmRequestId, timeout: 60)
-                    xunit = testingFarmResult.get('result', [:]).get('xunit', '')
+                    xunit = testingFarmResult.get('result', [:])?.get('xunit', '') ?: ''
                     evaluateTestingFarmResults(testingFarmResult)
                 }
             }
