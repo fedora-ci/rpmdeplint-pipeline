@@ -8,7 +8,7 @@ def pipelineMetadata = [
     testCategory: 'functional',
     testType: 'rpmdeplint',
     maintainer: 'Fedora CI',
-    docs: 'https://github.com/default-to-open/rpmdeplint/blob/master/docs/rpmdeplint.rst#commands',
+    docs: 'https://docs.fedoraproject.org/en-US/ci/generic_tests/#_rpmdeplint',
     contact: [
         irc: '#fedora-ci',
         email: 'ci@lists.fedoraproject.org'
