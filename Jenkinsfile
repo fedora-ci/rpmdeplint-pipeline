@@ -1,6 +1,6 @@
 #!groovy
 
-@Library('fedora-pipeline-library@candidate') _
+@Library('fedora-pipeline-library@candidate2') _
 
 def pipelineMetadata = [
     pipelineName: 'rpmdeplint',
@@ -20,10 +20,19 @@ def testingFarmRequestId
 def testingFarmResult
 def xunit
 
+def podYAML = """
+spec:
+  containers:
+  - name: pipeline-agent
+    # source: https://github.com/fedora-ci/jenkins-pipeline-library-agent-image
+    image: quay.io/fedoraci/pipeline-library-agent:candidate
+    tty: true
+    alwaysPullImage: true
+"""
 
 pipeline {
 
-    agent { label 'master' }
+    agent { label 'rpmdeplint' }
 
     options {
         buildDiscarder(logRotator(daysToKeepStr: '45', artifactNumToKeepStr: '100'))
@@ -90,7 +99,26 @@ pipeline {
                 script {
                     testingFarmResult = waitForTestingFarmResults(requestId: testingFarmRequestId, timeout: 60)
                     xunit = testingFarmResult.get('result', [:])?.get('xunit', '') ?: ''
-                    evaluateTestingFarmResults(testingFarmResult)
+                }
+            }
+        }
+
+        stage('Process Test Results (XUnit)') {
+            when {
+                expression { xunit }
+            }
+            agent {
+                kubernetes {
+                    yaml podYAML
+                    defaultContainer 'pipeline-agent'
+                }
+            }
+            steps {
+                script {
+                    // Convert Testing Farm XUnit into JUnit and store the result in Jenkins
+                    writeFile file: 'tfxunit.xml', text: "${xunit}"
+                    sh script: "tfxunit2junit --docs-url ${pipelineMetadata['docs']} tfxunit.xml > xunit.xml"
+                    junit(allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml')
                 }
             }
         }
@@ -98,16 +126,7 @@ pipeline {
 
     post {
         always {
-            // Show XUnit results in Jenkins, if possible
-            script {
-                if (xunit) {
-                    node('pipeline-library') {
-                        writeFile file: 'tfxunit.xml', text: "${xunit}"
-                        sh script: "tfxunit2junit --docs-url ${pipelineMetadata['docs']} tfxunit.xml > xunit.xml"
-                        junit(allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml')
-                    }
-                }
-            }
+            evaluateTestingFarmResults(testingFarmResult)
         }
         success {
             sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
