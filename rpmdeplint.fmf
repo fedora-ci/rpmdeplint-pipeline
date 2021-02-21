@@ -7,43 +7,55 @@ discover:
     tests:
     # for x86_64
     - name: check-sat-x86_64
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
       duration: 20m
     - name: check-repoclosure-x86_64
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
       duration: 20m
     - name: check-upgrade-x86_64
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
       duration: 20m
     - name: check-conflicts-x86_64
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
       duration: 180m
 
     # for aarch64
     - name: check-sat-aarch64
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
       duration: 20m
     - name: check-repoclosure-aarch64
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
       duration: 20m
     - name: check-upgrade-aarch64
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
       duration: 20m
     - name: check-conflicts-aarch64
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
       duration: 90m
 
     # for armv7hl/armhfp
     - name: check-sat-armv7hl
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch armv7hl --os fedora --workdir /workdir
       duration: 20m
     - name: check-repoclosure-armv7hl
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch armv7hl --os fedora --workdir /workdir
       duration: 20m
     - name: check-upgrade-armv7hl
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch armv7hl --os fedora --workdir /workdir
       duration: 20m
     - name: check-conflicts-armv7hl
+      framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch armv7hl --os fedora --workdir /workdir
       duration: 90m
 
@@ -66,4 +78,4 @@ prepare:
         /rpmdeplint_runner/run.py prepare --task-id $TASK_ID --release $RELEASE_ID --arch x86_64,aarch64,armv7hl --workdir /workdir
 
 execute:
-    how: shell
+    how: tmt
