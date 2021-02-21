@@ -17,10 +17,12 @@ The pipeline delegates the test execution to the Testing Farm. The pipeline only
 However, it is possible to run the rpmdeplint test locally. To do that, clone this repository and run following command:
 
 ```shell
-tmt run -a execute --script "/rpmdeplint/run_rpmdeplint.py -r f32 -t 43617203"
+tmt run --all --debug -e RELEASE_ID=f35 -e TASK_ID=62413077
 ```
 
-The command above will run rpmdeplint on a Koji build with the [task Id "43617203"](https://koji.fedoraproject.org/koji/taskinfo?taskID=43617203) (f32-backgrounds-32.1.3-1.fc32) and it tests it in the context of Fedora 32.
+The command above will run rpmdeplint on the [utop-2.7.0-3.fc35](https://koji.fedoraproject.org/koji/buildinfo?buildID=1713172) Koji build (it has the task Id "62413077") and it will test it in the context of Fedora 35.
+
+Note you need to have the `tmt-provision-container` package installed on your system.
 
 ## Promoting new rpmdeplint image to production
 
