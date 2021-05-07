@@ -77,7 +77,7 @@ pipeline {
                     checkout scm
                     pipelineRepoUrlAndRef = [url: "${getGitUrl()}", ref: "${getGitRef()}"]
                 }
-                sendMessage(type: 'queued', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+                sendMessage(type: 'queued', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
             }
         }
 
@@ -108,7 +108,7 @@ pipeline {
                     def response = submitTestingFarmRequest(payloadMap: requestPayload)
                     testingFarmRequestId = response['id']
                 }
-                sendMessage(type: 'running', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+                sendMessage(type: 'running', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
             }
         }
 
@@ -150,13 +150,13 @@ pipeline {
             evaluateTestingFarmResults(testingFarmResult)
         }
         success {
-            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
         }
         failure {
-            sendMessage(type: 'error', artifactId: artifactId, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+            sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
         }
         unstable {
-            sendMessage(type: 'complete', artifactId: artifactId, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
         }
     }
 }
