@@ -1,6 +1,11 @@
 #!groovy
 
-@Library('fedora-pipeline-library@fedora-stable') _
+retry (10) {
+    // load pipeline configuration into the environment
+    httpRequest("${FEDORA_CI_PIPELINES_CONFIG_URL}/environment").content.split('\n').each { l ->
+        l = l.trim(); if (l && !l.startsWith('#')) { env["${l.split('=')[0].trim()}"] = "${l.split('=')[1].trim()}" }
+    }
+}
 
 def pipelineMetadata = [
     pipelineName: 'rpmdeplint',
@@ -36,9 +41,13 @@ pipeline {
 
     agent none
 
+    libraries {
+        lib("fedora-pipeline-library@send-additional")
+    }
+
     options {
-        buildDiscarder(logRotator(daysToKeepStr: '45', artifactNumToKeepStr: '100'))
-        timeout(time: 12, unit: 'HOURS')
+        buildDiscarder(logRotator(daysToKeepStr: env.DEFAULT_DAYS_TO_KEEP_LOGS, artifactNumToKeepStr: env.DEFAULT_ARTIFACTS_TO_KEEP))
+        timeout(time: env.DEFAULT_PIPELINE_TIMEOUT_MINUTES, unit: 'MINUTES')
         skipDefaultCheckout(true)
     }
 
