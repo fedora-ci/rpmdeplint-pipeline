@@ -42,7 +42,7 @@ pipeline {
     agent none
 
     libraries {
-        lib("fedora-pipeline-library@send-additional")
+        lib("fedora-pipeline-library@${env.PIPELINE_LIBRARY_VERSION}")
     }
 
     options {
