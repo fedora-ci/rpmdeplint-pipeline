@@ -149,6 +149,13 @@ pipeline {
         always {
             evaluateTestingFarmResults(testingFarmResult)
         }
+        aborted {
+            script {
+                if (isTimeoutAborted(timeout: env.DEFAULT_PIPELINE_TIMEOUT_MINUTES, unit: 'MINUTES')) {
+                    sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, errorReason: 'Timeout has been exceeded, pipeline aborted.', pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+                }
+            }
+        }
         success {
             sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
         }
