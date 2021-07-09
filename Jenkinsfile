@@ -157,13 +157,13 @@ pipeline {
             }
         }
         success {
-            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, xunit: gzip(xunit), dryRun: isPullRequest())
         }
         failure {
             sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
         }
         unstable {
-            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, xunit: xunit, dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, xunit: gzip(xunit), dryRun: isPullRequest())
         }
     }
 }
