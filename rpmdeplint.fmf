@@ -21,7 +21,7 @@ discover:
     - name: check-conflicts-x86_64
       framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
-      duration: 180m
+      duration: 240m
 
     # for aarch64
     - name: check-sat-aarch64
