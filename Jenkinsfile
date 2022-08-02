@@ -26,16 +26,8 @@ def testingFarmResult
 def xunit
 def pipelineRepoUrlAndRef
 def hook
+def runUrl
 
-def podYAML = """
-spec:
-  containers:
-  - name: pipeline-agent
-    # source: https://github.com/fedora-ci/jenkins-pipeline-library-agent-image
-    image: quay.io/fedoraci/pipeline-library-agent:candidate
-    tty: true
-    alwaysPullImage: true
-"""
 
 pipeline {
 
@@ -119,27 +111,7 @@ pipeline {
                     def response = waitForTestingFarm(requestId: testingFarmRequestId, hook: hook)
                     testingFarmResult = response.apiResponse
                     xunit = response.xunit
-                }
-            }
-        }
-
-        stage('Process Test Results (XUnit)') {
-            when {
-                beforeAgent true
-                expression { xunit }
-            }
-            agent {
-                kubernetes {
-                    yaml podYAML
-                    defaultContainer 'pipeline-agent'
-                }
-            }
-            steps {
-                script {
-                    // Convert Testing Farm XUnit into JUnit and store the result in Jenkins
-                    writeFile file: 'tfxunit.xml', text: "${xunit}"
-                    sh script: "tfxunit2junit --docs-url ${pipelineMetadata['docs']} tfxunit.xml > xunit.xml"
-                    junit(allowEmptyResults: true, keepLongStdio: true, testResults: 'xunit.xml')
+                    runUrl = "${FEDORA_CI_TESTING_FARM_ARTIFACTS_URL}/${testingFarmRequestId}"
                 }
             }
         }
@@ -152,18 +124,18 @@ pipeline {
         aborted {
             script {
                 if (isTimeoutAborted(timeout: env.DEFAULT_PIPELINE_TIMEOUT_MINUTES, unit: 'MINUTES')) {
-                    sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, errorReason: 'Timeout has been exceeded, pipeline aborted.', pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+                    sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, errorReason: 'Timeout has been exceeded, pipeline aborted.', pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
                 }
             }
         }
         success {
-            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, xunit: gzip(xunit), dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, xunit: gzip(xunit), dryRun: isPullRequest())
         }
         failure {
-            sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+            sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
         }
         unstable {
-            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, xunit: gzip(xunit), dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, xunit: gzip(xunit), dryRun: isPullRequest())
         }
     }
 }
