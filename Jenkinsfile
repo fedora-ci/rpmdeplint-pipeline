@@ -23,7 +23,6 @@ def artifactId
 def additionalArtifactIds
 def testingFarmRequestId
 def testingFarmResult
-def xunit
 def pipelineRepoUrlAndRef
 def hook
 def runUrl
@@ -110,7 +109,6 @@ pipeline {
                 script {
                     def response = waitForTestingFarm(requestId: testingFarmRequestId, hook: hook)
                     testingFarmResult = response.apiResponse
-                    xunit = response.xunit
                     runUrl = "${FEDORA_CI_TESTING_FARM_ARTIFACTS_URL}/${testingFarmRequestId}"
                 }
             }
@@ -129,13 +127,13 @@ pipeline {
             }
         }
         success {
-            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, xunit: gzip(xunit), dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
         }
         failure {
             sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
         }
         unstable {
-            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, xunit: gzip(xunit), dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
         }
     }
 }
