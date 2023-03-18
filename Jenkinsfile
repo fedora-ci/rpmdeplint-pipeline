@@ -99,7 +99,7 @@ pipeline {
                     def response = submitTestingFarmRequest(payloadMap: requestPayload)
                     testingFarmRequestId = response['id']
                 }
-                // sendMessage(type: 'running', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+                sendMessage(type: 'running', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
             }
         }
 
