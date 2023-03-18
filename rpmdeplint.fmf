@@ -44,7 +44,7 @@ discover:
 provision:
     how: container
     # source: https://github.com/fedora-ci/rpmdeplint-image
-    image: quay.io/fedoraci/rpmdeplint:f2a6220
+    image: quay.io/fedoraci/rpmdeplint:226fcb5
 
 prepare:
     how: shell
