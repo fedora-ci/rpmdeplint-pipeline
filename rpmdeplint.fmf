@@ -13,7 +13,7 @@ discover:
     - name: check-repoclosure-x86_64
       framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
-      duration: 20m
+      duration: 120m
     - name: check-upgrade-x86_64
       framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
@@ -21,7 +21,7 @@ discover:
     - name: check-conflicts-x86_64
       framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
-      duration: 360m
+      duration: 60m
 
     # for aarch64
     - name: check-sat-aarch64
@@ -31,7 +31,7 @@ discover:
     - name: check-repoclosure-aarch64
       framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
-      duration: 20m
+      duration: 120m
     - name: check-upgrade-aarch64
       framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
@@ -39,7 +39,7 @@ discover:
     - name: check-conflicts-aarch64
       framework: shell
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
-      duration: 180m
+      duration: 60m
 
 provision:
     how: container
