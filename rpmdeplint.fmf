@@ -1,4 +1,4 @@
-summary: TMT/FMF plan for running the rpmdeplint tests.
+summary: TMT/FMF plan for running the rpmdeplint tests
 description: |
     Runs rpmdeplint tests in Fedora CI — https://github.com/fedora-ci/rpmdeplint-pipeline.
 
@@ -43,8 +43,8 @@ discover:
 
 provision:
     how: container
-    # source: https://github.com/fedora-ci/rpmdeplint-image
-    image: quay.io/fedoraci/rpmdeplint:f2a6220
+    # source: https://github.com/fedora-ci/rpmdeplint-runner
+    image: quay.io/fedoraci/rpmdeplint:74e8145
 
 prepare:
     how: shell

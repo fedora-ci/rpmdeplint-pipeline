@@ -2,7 +2,7 @@
 
 This repository contains the definition of the rpmdeplint CI pipeline.
 
-This pipeline runs the [rpmdeplint](https://github.com/fedora-ci/rpmdeplint-image) tool on RPM packages and publishes results via [CI Messages](https://pagure.io/fedora-ci/messages).
+This pipeline runs the [rpmdeplint](https://github.com/fedora-ci/rpmdeplint-runner) tool on RPM packages and publishes results via [CI Messages](https://pagure.io/fedora-ci/messages).
 
 ## Test definition
 
@@ -37,7 +37,7 @@ The version of the image (image tag) is a specific commit hash. By pinning down 
 The recommended workflow for promoting a new image to production is as follows:
 
 * build the image the official way
-  * open a pull request with your changes in the [rpmdeplint-image](https://github.com/fedora-ci/rpmdeplint-image) repository
+  * open a pull request with your changes in the [rpmdeplint-runner](https://github.com/fedora-ci/rpmdeplint-runner) repository
   * let CI build the test image for you
   * let people review your changes
   * merge once satisfied
