@@ -1,4 +1,4 @@
-summary: TMT/FMF plan for running the rpmdeplint tests.
+summary: TMT/FMF plan for running the rpmdeplint tests
 description: |
     Runs rpmdeplint tests in Fedora CI — https://github.com/fedora-ci/rpmdeplint-pipeline.
 
@@ -7,44 +7,38 @@ discover:
     tests:
     # for x86_64
     - name: check-sat-x86_64
-      framework: shell
-      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
+      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
       duration: 20m
-    - name: check-repoclosure-x86_64
-      framework: shell
-      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
-      duration: 20m
+# Feel free to uncomment, but beware it takes around an hour because it checks every package in repo
+#    - name: check-repoclosure-x86_64
+#      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
+#      duration: 180m
     - name: check-upgrade-x86_64
-      framework: shell
-      test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
+      test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
       duration: 20m
     - name: check-conflicts-x86_64
-      framework: shell
-      test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch x86_64 --os fedora --workdir /workdir
-      duration: 360m
+      test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
+      duration: 60m
 
     # for aarch64
     - name: check-sat-aarch64
-      framework: shell
-      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
+      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
       duration: 20m
-    - name: check-repoclosure-aarch64
-      framework: shell
-      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
-      duration: 20m
+# Feel free to uncomment, but beware it takes around an hour because it checks every package in repo
+#    - name: check-repoclosure-aarch64
+#      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
+#      duration: 180m
     - name: check-upgrade-aarch64
-      framework: shell
-      test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
+      test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
       duration: 20m
     - name: check-conflicts-aarch64
-      framework: shell
-      test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch aarch64 --os fedora --workdir /workdir
-      duration: 180m
+      test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
+      duration: 60m
 
 provision:
     how: container
-    # source: https://github.com/fedora-ci/rpmdeplint-image
-    image: quay.io/fedoraci/rpmdeplint:f2a6220
+    # source: https://github.com/fedora-ci/rpmdeplint-runner
+    image: quay.io/fedoraci/rpmdeplint:74e8145
 
 prepare:
     how: shell
@@ -57,7 +51,7 @@ prepare:
             echo "TASK_ID not specified"
             exit 1
         fi
-        /rpmdeplint_runner/run.py prepare --task-id $TASK_ID --release $RELEASE_ID --arch x86_64,aarch64 --workdir /workdir
+        /rpmdeplint_runner/run.py prepare --task-id $TASK_ID --release $RELEASE_ID --arch x86_64,aarch64
 
 execute:
     how: tmt
