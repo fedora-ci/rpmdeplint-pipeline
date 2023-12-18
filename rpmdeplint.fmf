@@ -8,37 +8,45 @@ discover:
     # for x86_64
     - name: check-sat-x86_64
       test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
+      result: custom
       duration: 20m
 # Feel free to uncomment, but beware it takes around an hour because it checks every package in repo
 #    - name: check-repoclosure-x86_64
 #      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
+#      result: custom
 #      duration: 180m
     - name: check-upgrade-x86_64
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
+      result: custom
       duration: 20m
     - name: check-conflicts-x86_64
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
+      result: custom
       duration: 60m
 
     # for aarch64
     - name: check-sat-aarch64
       test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
+      result: custom
       duration: 20m
 # Feel free to uncomment, but beware it takes around an hour because it checks every package in repo
 #    - name: check-repoclosure-aarch64
 #      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
+#      result: custom
 #      duration: 180m
     - name: check-upgrade-aarch64
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
+      result: custom
       duration: 20m
     - name: check-conflicts-aarch64
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
+      result: custom
       duration: 60m
 
 provision:
     how: container
     # source: https://github.com/fedora-ci/rpmdeplint-runner
-    image: quay.io/fedoraci/rpmdeplint:74e8145
+    image: quay.io/fedoraci/rpmdeplint:d961339
 
 prepare:
     how: shell
