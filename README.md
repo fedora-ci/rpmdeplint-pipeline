@@ -30,21 +30,21 @@ The [rpmdeplint.fmf](./rpmdeplint.fmf) file references a specific version of the
 
 The version of the image (image tag) is a specific commit hash. By pinning down a specific version, we ensure that:
 
-* we always know what exactly is running in production
-* we can easily reproduce reported issues as we can pull the exact image from the container registry
-* we can easily rollback, if needed, simply by reverting a commit in this repository
+- we always know what exactly is running in production
+- we can easily reproduce reported issues as we can pull the exact image from the container registry
+- we can easily rollback, if needed, simply by reverting a commit in this repository
 
 The recommended workflow for promoting a new image to production is as follows:
 
-* build the image the official way
-  * open a pull request with your changes in the [rpmdeplint-runner](https://github.com/fedora-ci/rpmdeplint-runner) repository
-  * let CI build the test image for you
-  * let people review your changes
-  * merge once satisfied
-  * let CI build the official image for you
-    * it will be tagged with the short commit hash of the master branch tip
-* open a pull request in this repository and update the image tag in the [rpmdeplint.fmf](./rpmdeplint.fmf)
-  * let CI create a test pipeline for you
-  * try running some tests with the test pipeline
-  * merge once satisfied
-* profit; or quickly revert the commit if the new image doesn't work as expected :)
+- build the image the official way
+  - open a pull request with your changes in the [rpmdeplint-runner](https://github.com/fedora-ci/rpmdeplint-runner) repository
+  - let CI build the test image for you
+  - let people review your changes
+  - merge once satisfied
+  - let CI build the official image for you
+    - it will be tagged with the short commit hash of the master branch tip
+- open a pull request in this repository and update the image tag in the [rpmdeplint.fmf](./rpmdeplint.fmf)
+  - let CI create a test pipeline for you
+  - try running some tests with the test pipeline
+  - merge once satisfied
+- profit; or quickly revert the commit if the new image doesn't work as expected :)
