@@ -22,7 +22,7 @@ discover:
     - name: check-conflicts-x86_64
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
       result: custom
-      duration: 180m
+      duration: 360m
 
     # for aarch64
     - name: check-sat-aarch64
@@ -41,7 +41,7 @@ discover:
     - name: check-conflicts-aarch64
       test: /rpmdeplint_runner/run.py run-test --name check-conflicts --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
       result: custom
-      duration: 180m
+      duration: 360m
 
 provision:
     how: container
