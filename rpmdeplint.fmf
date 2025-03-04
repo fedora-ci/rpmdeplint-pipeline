@@ -10,11 +10,10 @@ discover:
       test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
       result: custom
       duration: 20m
-# Feel free to uncomment, but beware it takes around an hour because it checks every package in repo
-#    - name: check-repoclosure-x86_64
-#      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
-#      result: custom
-#      duration: 180m
+    - name: check-repoclosure-x86_64
+      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
+      result: custom
+      duration: 180m
     - name: check-upgrade-x86_64
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
       result: custom
@@ -29,11 +28,10 @@ discover:
       test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
       result: custom
       duration: 20m
-# Feel free to uncomment, but beware it takes around an hour because it checks every package in repo
-#    - name: check-repoclosure-aarch64
-#      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
-#      result: custom
-#      duration: 180m
+    - name: check-repoclosure-aarch64
+      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
+      result: custom
+      duration: 180m
     - name: check-upgrade-aarch64
       test: /rpmdeplint_runner/run.py run-test --name check-upgrade --task-id $TASK_ID --release $RELEASE_ID --arch aarch64
       result: custom
