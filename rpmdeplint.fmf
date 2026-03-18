@@ -6,11 +6,16 @@ discover:
     how: shell
     tests:
     # for x86_64
-    - name: check-sat-x86_64
-      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
-      result: custom
-      duration: 20m
-# Feel free to uncomment, but beware it takes around an hour because it checks every package in repo
+# rmdepcheck does this faster:
+# https://github.com/fedora-ci/rmdepcheck-pipeline
+# https://forge.fedoraproject.org/quality/rmdepcheck
+#    - name: check-sat-x86_64
+#      test: /rpmdeplint_runner/run.py run-test --name check-sat --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
+#      result: custom
+#      duration: 20m
+# rmdepcheck does this faster and more accurately:
+# https://github.com/fedora-ci/rmdepcheck-pipeline
+# https://forge.fedoraproject.org/quality/rmdepcheck
 #    - name: check-repoclosure-x86_64
 #      test: /rpmdeplint_runner/run.py run-test --name check-repoclosure --task-id $TASK_ID --release $RELEASE_ID --arch x86_64
 #      result: custom
