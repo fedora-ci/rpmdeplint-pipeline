@@ -19,6 +19,7 @@ def pipelineMetadata = [
         email: 'ci@lists.fedoraproject.org'
     ],
 ]
+def artifactIds
 def artifactId
 def additionalArtifactIds
 def testingFarmRequestId
@@ -45,6 +46,9 @@ pipeline {
     parameters {
         string(name: 'ARTIFACT_ID', defaultValue: '', trim: true, description: '"koji-build:&lt;taskId&gt;" for Koji builds; Example: koji-build:46436038')
         string(name: 'ADDITIONAL_ARTIFACT_IDS', defaultValue: '', trim: true, description: 'A comma-separated list of additional ARTIFACT_IDs')
+        string(name: 'BODHI_UPDATE_ID', defaultValue: '', trim: true, description: '"Bodhi updated ID; Example: FEDORA-2025-7826f19244')
+        string(name: 'ARTIFACT_IDS', defaultValue: '', trim: true, description: 'A comma-separated list of all koji builds in the update; Example: koji-build:46436038')
+        string(name: 'DIST_GIT_BRANCH', defaultValue: '', trim: true, description: "Dist-git branch associated with the provided BODHI_UPDATE_ID")
     }
 
     environment {
@@ -58,17 +62,30 @@ pipeline {
             }
             steps {
                 script {
-                    artifactId = params.ARTIFACT_ID
-                    additionalArtifactIds = params.ADDITIONAL_ARTIFACT_IDS
-                    setBuildNameFromArtifactId(artifactId: artifactId)
-
-                    if (!artifactId) {
-                        abort('ARTIFACT_ID is missing')
+                    if (params.BODHI_UPDATE_ID) {
+                        // TODO: Enable this when the refactor is over
+//                         if (!params.BODHI_UPDATE_ID) {
+//                             abort('BODHI_UPDATE_ID is missing')
+//                         }
+                        if (!params.ARTIFACT_IDS) {
+                            abort('ARTIFACT_IDS is missing')
+                        }
+                        bodhiId = params.BODHI_UPDATE_ID
+                        artifactIds = params.ARTIFACT_IDS
+                        currentBuild.displayName = params.BODHI_UPDATE_ID
+                    } else {
+                        artifactId = params.ARTIFACT_ID
+                        additionalArtifactIds = params.ADDITIONAL_ARTIFACT_IDS
+                        artifactIds = params.ADDITIONAL_ARTIFACT_IDS
+                        setBuildNameFromArtifactId(artifactId: artifactId)
+                        if (!artifactId) {
+                            abort('ARTIFACT_ID is missing')
+                        }
                     }
                     checkout scm
                     pipelineRepoUrlAndRef = [url: "${getGitUrl()}", ref: "${getGitRef()}"]
                 }
-                sendMessage(type: 'queued', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
+                sendMessage(type: 'queued', artifactId: artifactId, additionalArtifactIds: artifactIds, pipelineMetadata: pipelineMetadata, dryRun: isPullRequest())
             }
         }
 
@@ -78,21 +95,44 @@ pipeline {
             }
             steps {
                 script {
-                    def requestPayload = [
-                        api_key: "${env.TESTING_FARM_API_KEY}",
-                        test: [
-                            fmf: pipelineRepoUrlAndRef
-                        ],
-                        environments: [
-                            [
-                                arch: "x86_64",
-                                variables: [
-                                    RELEASE_ID: "${getReleaseIdFromBranch()}",
-                                    TASK_ID: "${getIdFromArtifactId(artifactId: artifactId, additionalArtifactIds: additionalArtifactIds)}"
+                    def requestPayload
+                    if (params.BODHI_UPDATE_ID) {
+                        requestPayload = [
+                            api_key: "${env.TESTING_FARM_API_KEY}",
+                            test: [
+                                fmf: pipelineRepoUrlAndRef
+                            ],
+                            environments: [
+                                [
+                                    arch: "x86_64",
+                                    variables: [
+                                        BODHI_UPDATE_ID: params.BODHI_UPDATE_ID,
+                                    ],
+                                    tmt: [
+                                        context: [
+                                            "dist-git-branch": params.DIST_GIT_BRANCH,
+                                        ]
+                                    ]
                                 ]
                             ]
                         ]
-                    ]
+                    } else {
+                        requestPayload = [
+                            api_key: "${env.TESTING_FARM_API_KEY}",
+                            test: [
+                                fmf: pipelineRepoUrlAndRef
+                            ],
+                            environments: [
+                                [
+                                    arch: "x86_64",
+                                    variables: [
+                                        RELEASE_ID: "${getReleaseIdFromBranch()}",
+                                        TASK_ID: "${getIdFromArtifactId(artifactId: artifactId, additionalArtifactIds: additionalArtifactIds)}"
+                                    ]
+                                ]
+                            ]
+                        ]
+                    }
                     hook = registerWebhook()
                     requestPayload['notification'] = ['webhook': [url: hook.getURL()]]
 
@@ -100,7 +140,7 @@ pipeline {
                     testingFarmRequestId = response['id']
                     runUrl = "${FEDORA_CI_TESTING_FARM_ARTIFACTS_URL}/${testingFarmRequestId}"
                 }
-                sendMessage(type: 'running', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
+                sendMessage(type: 'running', artifactId: artifactId, additionalArtifactIds: artifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
             }
         }
 
@@ -122,18 +162,18 @@ pipeline {
         aborted {
             script {
                 if (isTimeoutAborted(timeout: env.DEFAULT_PIPELINE_TIMEOUT_MINUTES, unit: 'MINUTES')) {
-                    sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, errorReason: 'Timeout has been exceeded, pipeline aborted.', pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
+                    sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: artifactIds, errorReason: 'Timeout has been exceeded, pipeline aborted.', pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
                 }
             }
         }
         success {
-            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: artifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
         }
         failure {
-            sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
+            sendMessage(type: 'error', artifactId: artifactId, additionalArtifactIds: artifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
         }
         unstable {
-            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: additionalArtifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
+            sendMessage(type: 'complete', artifactId: artifactId, additionalArtifactIds: artifactIds, pipelineMetadata: pipelineMetadata, runUrl: runUrl, dryRun: isPullRequest())
         }
     }
 }
