@@ -112,13 +112,12 @@
       - bodhi
       - koji
       - createrepo
-      - python3-fedora-distro-aliases
 
   /check:
     order: 60
     require:
       - rpmdeplint
-      - python3-fedora-distro-aliases
+      - koji
     test: ./run_rpmdeplint.py $DIST_GIT_BRANCH --arch=$arch
     duration: 20m
     /sat:

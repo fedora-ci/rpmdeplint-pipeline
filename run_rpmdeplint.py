@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # /// script
 # dependencies = [
-#   "fedora-distro-aliases",
+#   "koji",
 # ]
 # ///
 
@@ -11,7 +11,7 @@ import os
 import subprocess
 from pathlib import Path
 
-from fedora_distro_aliases import bodhi_active_releases
+import koji
 
 logging.basicConfig(level="INFO")
 logger = logging.getLogger(Path(__file__).name)
@@ -20,30 +20,16 @@ KOJI_BASE = r"https://kojipkgs.fedoraproject.org/repos/{distro_build}/latest/{ar
 """
 Koji build base repo used for the rmdepcheck base repo.
 """
-FEDORA_ID_PREFIXES = {
-    "FEDORA",
-    "FEDORA-EPEL",
-    "FEDORA-EPEL-NEXT",  # Currently only used by epel9-next
-    # Skipping FEDORA-CONTAINER and FEDORA-FLATPAK
-}
-"""
-Supported ``ID Prefix`` of the releases in https://bodhi.fedoraproject.org/releases.
-"""
 
 
 def get_distro_build(dist_git_branch: str) -> str:
-    releases = [
-        release
-        for release in bodhi_active_releases()
-        if release["id_prefix"] in FEDORA_ID_PREFIXES
-        and release["branch"] == dist_git_branch
-    ]
-
-    if not releases or len(releases) > 1:
-        logger.error(f"Could not identify release for branch '{dist_git_branch}'")
-        exit(1)
-    # Seems like we can use the dist_tag to construct the koji build tag for all cases
-    return f"{releases[0]['dist_tag']}-build"
+    config = koji.read_config("koji")
+    koji_session= koji.ClientSession(config["server"])
+    build_target = koji_session.getBuildTarget(dist_git_branch)
+    if not build_target:
+        logger.error("Could not find the build target for '%s'", dist_git_branch)
+        raise exit(1)
+    return build_target["build_tag_name"]
 
 
 def main(args: argparse.Namespace) -> None:
