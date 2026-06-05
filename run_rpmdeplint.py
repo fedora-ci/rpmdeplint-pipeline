@@ -18,7 +18,7 @@ logger = logging.getLogger(Path(__file__).name)
 
 KOJI_BASE = r"https://kojipkgs.fedoraproject.org/repos/{distro_build}/latest/{arch}"
 """
-Koji build base repo used for the rmdepcheck base repo.
+Koji build base repo used for the rpmdeplint base repo.
 """
 
 
@@ -56,7 +56,7 @@ def main(args: argparse.Namespace) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Actually run rmdepcheck")
+    parser = argparse.ArgumentParser(description="Actually run rpmdeplint")
     parser.add_argument("dist_git_branch")
     parser.add_argument("--arch", default="x86_64")
     parser.add_argument(
@@ -75,8 +75,8 @@ if __name__ == "__main__":
     try:
         main(args)
     except (subprocess.CalledProcessError, SystemExit):
-        logger.error("Rmdepcheck failed!")
+        logger.error("rpmdeplint failed!")
         raise SystemExit(1)
     except Exception as exc:
-        logger.error("Unexpected rmdepcheck failure", exc_info=exc)
+        logger.error("Unexpected rpmdeplint failure", exc_info=exc)
         raise SystemExit(2)
