@@ -31,6 +31,7 @@
 /steps:
   /prepare:
     summary: Prepare the environment for rpmdeplint
+    duration: 30m
     order: 50
     test: |
       if [[ -n "$BODHI_UPDATE_ID" ]]; then
@@ -59,5 +60,4 @@
       test+: " --check upgrade"
     /conflicts:
       test+: " --check conflicts"
-      duration: 360m
     # repoclosure is not run because rmdepcheck does it more efficently
