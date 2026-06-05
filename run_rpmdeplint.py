@@ -39,6 +39,7 @@ def main(args: argparse.Namespace) -> None:
             "rpmdeplint",
             "--debug",
             f"check-{args.check}",
+            "--allconflicts",
             f"--arch={args.arch}",
             # Base repo
             "--repo=koji-base,{base_repo}".format(
