@@ -24,11 +24,11 @@ Koji build base repo used for the rmdepcheck base repo.
 
 def get_distro_build(dist_git_branch: str) -> str:
     config = koji.read_config("koji")
-    koji_session= koji.ClientSession(config["server"])
+    koji_session = koji.ClientSession(config["server"])
     build_target = koji_session.getBuildTarget(dist_git_branch)
     if not build_target:
         logger.error("Could not find the build target for '%s'", dist_git_branch)
-        raise exit(1)
+        raise SystemExit(1)
     return build_target["build_tag_name"]
 
 

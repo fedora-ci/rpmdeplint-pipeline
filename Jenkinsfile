@@ -46,9 +46,9 @@ pipeline {
     parameters {
         string(name: 'ARTIFACT_ID', defaultValue: '', trim: true, description: '"koji-build:&lt;taskId&gt;" for Koji builds; Example: koji-build:46436038')
         string(name: 'ADDITIONAL_ARTIFACT_IDS', defaultValue: '', trim: true, description: 'A comma-separated list of additional ARTIFACT_IDs')
-        string(name: 'BODHI_UPDATE_ID', defaultValue: '', trim: true, description: '"Bodhi updated ID; Example: FEDORA-2025-7826f19244')
+        string(name: 'BODHI_UPDATE_ID', defaultValue: '', trim: true, description: 'Bodhi updated ID; Example: FEDORA-2025-7826f19244')
         string(name: 'ARTIFACT_IDS', defaultValue: '', trim: true, description: 'A comma-separated list of all koji builds in the update; Example: koji-build:46436038')
-        string(name: 'DIST_GIT_BRANCH', defaultValue: '', trim: true, description: "Dist-git branch associated with the provided BODHI_UPDATE_ID")
+        string(name: 'DIST_GIT_BRANCH', defaultValue: '', trim: true, description: 'Dist-git branch associated with the provided BODHI_UPDATE_ID')
     }
 
     environment {
@@ -69,6 +69,9 @@ pipeline {
 //                         }
                         if (!params.ARTIFACT_IDS) {
                             abort('ARTIFACT_IDS is missing')
+                        }
+                        if (!params.DIST_GIT_BRANCH) {
+                            abort('DIST_GIT_BRANCH is missing')
                         }
                         bodhiId = params.BODHI_UPDATE_ID
                         artifactIds = params.ARTIFACT_IDS
