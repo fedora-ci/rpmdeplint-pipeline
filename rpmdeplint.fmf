@@ -60,3 +60,4 @@
     /conflicts:
       test+: " --check conflicts"
       duration: 360m
+    # repoclosure is not run because rmdepcheck does it more efficently
