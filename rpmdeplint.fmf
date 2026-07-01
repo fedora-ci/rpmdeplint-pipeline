@@ -24,6 +24,11 @@
     - how: shell
       script: |
         echo "DIST_GIT_BRANCH=$@{dist-git-branch}" >> $TMT_PLAN_ENVIRONMENT_FILE
+    - name: Adjust the dist-git branch for eln tests on rawhide
+      how: shell
+      script: |
+        echo "DIST_GIT_BRANCH=eln" >> $TMT_PLAN_ENVIRONMENT_FILE
+      when: variant is defined and variant == eln
 
   execute:
     how: tmt
