@@ -7,11 +7,12 @@
 
 import argparse
 import logging
-import os
 import subprocess
 from pathlib import Path
 
 import koji
+
+from utils import get_workdir
 
 logging.basicConfig(level="INFO")
 logger = logging.getLogger(Path(__file__).name)
@@ -33,7 +34,7 @@ def get_distro_build(dist_git_branch: str) -> str:
 
 
 def main(args: argparse.Namespace) -> None:
-    repo_path: Path = args.workdir / "repo" / args.arch
+    repo_path = get_workdir() / "repo" / args.arch
     subprocess.run(
         [
             "rpmdeplint",
@@ -59,11 +60,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Actually run rpmdeplint")
     parser.add_argument("dist_git_branch")
     parser.add_argument("--arch", default="x86_64")
-    parser.add_argument(
-        "--workdir",
-        type=Path,
-        default=os.environ.get("TMT_PLAN_DATA", "."),
-    )
     parser.add_argument(
         "--check",
         required=True,
